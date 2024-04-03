@@ -8,10 +8,6 @@ function App() {
   const [correct_words, setCorrectWords] = useState([])
   const [false_words, setFalseWords] = useState([])
 
-  let isOnSecondLine = useRef(false)
-  let linesToDelete = useRef(0);
-  let firstLineToDelete = useRef(0)
-
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
 
@@ -95,37 +91,25 @@ function App() {
       current_char.current = 0
 
       let next_word = document.getElementsByClassName(`word${current_word.current + 1} word`)[0];
-      const rect = next_word?.getBoundingClientRect();
+      if (!next_word) {
+        setWords([])
+        return;
+      }
+      const rect = next_word.getBoundingClientRect();
       setCursorY(Math.floor(rect.top) + 2)
       setCursorX(Math.floor(rect.left) + 2)
 
-      if (next_word) {
-        if ((current_height.current != Math.floor(rect.top)) && isOnSecondLine.current == true) {
-          isOnSecondLine.current = false
-          console.log(firstLineToDelete.current)
-          const newArray = words.slice(firstLineToDelete.current + 1)
+      if (current_height.current != Math.floor(rect.top)) {
+      
+          current_height.current = Math.floor(rect.top)
+          const newArray = words.slice(current_word.current + 1)
           setWords(newArray)
-
-          current_word.current = firstLineToDelete.current
-          current_char.current = 0
-          current_height.current = Math.floor(rect.top)
-        } else if ((current_height.current != Math.floor(rect.top)) && !isOnSecondLine.current) {
-          isOnSecondLine.current = true
-          current_height.current = Math.floor(rect.top)
-          console.log('current word', current_word.current)
-          firstLineToDelete.current = current_word.current
-          linesToDelete.current = current_word.current
-          current_word.current++
-          current_char.current = 0
+          setCorrectWords([])
+          setFalseWords([])
+          current_word.current = 0
           return;
-        } else if ((current_height.current == Math.floor(rect.top))) {
-          console.log('in last')
-          current_char.current = 0
-          current_word.current++
-          linesToDelete.current = current_word.current
-        }
       } else {
-        setWords([])
+          current_word.current++
       }
     }
   }
