@@ -146,9 +146,9 @@ Follow these steps to get started with the Typing Game React project:
 	**Arch**:
 
 	```sh
-	sudo pacman update
+	sudo pacman -Syu
 
-	sudo pacman install nodejs npm
+	sudo pacman -S nodejs npm
 	```
 
 	  
