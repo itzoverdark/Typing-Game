@@ -1,0 +1,36 @@
+body {
+	background-color: #2f2f2f;
+}
+
+.parent-container {
+	display: flex;
+	max-width: 1080px;
+	flex-wrap: wrap;
+	margin: auto;
+	height: 100px;
+	overflow: hidden;
+	transition: all 1s ease-in-out;
+}
+
+.word {
+	padding: 3px;
+	color: white;
+	font-size: 20px;
+	font-family: sans-serif;
+	transition: all 1s ease-in-out;
+}
+
+.correct {
+	color: #03c511;
+}
+
+.false {
+	color: red;
+}
+
+.cursor {
+	height: 29px;
+	transition: all 0.1s ease-in-out;
+	width: 1px;
+	background-color: gold;
+}
