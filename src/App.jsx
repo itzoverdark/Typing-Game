@@ -11,6 +11,8 @@ function App() {
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
 
+  let hideCursor = useRef(false);
+
   let current_height = useRef(0);
   let current_word = useRef(0);
   let current_char = useRef(0);
@@ -93,6 +95,7 @@ function App() {
       let next_word = document.getElementsByClassName(`word${current_word.current + 1} word`)[0];
       if (!next_word) {
         setWords([])
+        hideCursor.current = true;
         return;
       }
       const rect = next_word.getBoundingClientRect();
@@ -131,7 +134,7 @@ function App() {
       <div className='header'></div>
       <div tabIndex={0} onKeyDown={(e) => handleClick(e.key)} className='parent-container'>
 
-        <div className={`cursor`} style={{ position: 'absolute', left: cursorX, top: cursorY }}></div>
+        <div className={`cursor`} style={{ position: 'absolute', left: cursorX, top: cursorY, display:`${hideCursor.current ? 'none' : 'block'}` }}></div>
         {words?.map((word, i) => (
           <div key={i} className={`word${i} word`}>
             {word.split('').map((char, j) => {
