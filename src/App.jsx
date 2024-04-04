@@ -8,6 +8,8 @@ function App() {
   const [correct_words, setCorrectWords] = useState([])
   const [false_words, setFalseWords] = useState([])
 
+  let isIncremented = useRef(false)
+
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
 
@@ -59,8 +61,123 @@ function App() {
       return;
     }
 
+    if (key == 'Backspace') {
+      isIncremented.current = false
+
+      if (current_word.current > 0) {
+        if (current_char.current > 0) {
+          
+          const CorrectIndex = correct_words.findIndex(obj => current_word.current in obj);
+          const FalseIndex = false_words.findIndex(obj => current_word.current in obj);
+
+          
+          if (FalseIndex != -1) {
+            const updatedFalseWords = [...false_words]
+            if (updatedFalseWords[FalseIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedFalseWords[FalseIndex][current_word.current].pop()
+              setFalseWords(updatedFalseWords)
+            }
+          }
+          if (CorrectIndex != -1) {
+            const updatedCorrectWords = [...correct_words]
+            if (updatedCorrectWords[CorrectIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedCorrectWords[CorrectIndex][current_word.current].pop()
+              setCorrectWords(updatedCorrectWords)
+            } else {
+              setCorrectWords(updatedCorrectWords)
+            }          
+          }
+
+          current_char.current--;
+
+          let char = word?.children[current_char.current]
+          let charRect = char?.getBoundingClientRect();
+
+          setCursorX(Math.floor(charRect.left))
+          setCursorY(Math.floor(charRect.top))
+
+          return
+
+        } else {
+          current_word.current--;
+          let word = document.getElementsByClassName(`word${current_word.current} word`)[0];
+          current_char.current = word.children.length - 1;
+          
+
+          let char = word.children[current_char.current]
+          let charRect = char.getBoundingClientRect();
+
+          const CorrectIndex = correct_words.findIndex(obj => current_word.current in obj);
+          const FalseIndex = false_words.findIndex(obj => current_word.current in obj);
+
+          
+          if (FalseIndex != -1) {
+            const updatedFalseWords = [...false_words]
+            if (updatedFalseWords[FalseIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedFalseWords[FalseIndex][current_word.current].pop()
+              setFalseWords(updatedFalseWords)
+            }
+          }
+          if (CorrectIndex != -1) {
+            const updatedCorrectWords = [...correct_words]
+            if (updatedCorrectWords[CorrectIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedCorrectWords[CorrectIndex][current_word.current].pop()
+              setCorrectWords(updatedCorrectWords)
+            } else {
+              setCorrectWords(updatedCorrectWords)
+            }          
+          }
+
+          setCursorX(Math.floor(charRect.left))
+          setCursorY(Math.floor(charRect.top))
+
+          return
+        }
+      } else {
+        if (current_char.current > 0) {
+
+          const CorrectIndex = correct_words.findIndex(obj => current_word.current in obj);
+          const FalseIndex = false_words.findIndex(obj => current_word.current in obj);
+          
+          if (FalseIndex != -1) {
+            const updatedFalseWords = [...false_words]
+            if (updatedFalseWords[FalseIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedFalseWords[FalseIndex][current_word.current].pop()
+              setFalseWords(updatedFalseWords)
+            }
+          }
+          if (CorrectIndex != -1) {
+            const updatedCorrectWords = [...correct_words]
+            if (updatedCorrectWords[CorrectIndex][current_word.current].includes((current_char.current - 1))) {
+              updatedCorrectWords[CorrectIndex][current_word.current].pop()
+              setCorrectWords(updatedCorrectWords)
+            } else {
+              setCorrectWords(updatedCorrectWords)
+            }          
+          }
+
+          current_char.current--;
+
+          let char = word?.children[current_char.current]
+          let charRect = char?.getBoundingClientRect();
+
+          setCursorX(Math.floor(charRect.left))
+          setCursorY(Math.floor(charRect.top))
+
+          return
+        } else {
+          current_char.current = 0;
+          setCorrectWords([])
+          setFalseWords([])
+
+          return
+        }
+      }
+    }
+
     if (current_char.current <= word_characters_count) {
-      if (key == word?.children[current_char.current].textContent) {
+      if (key == word?.children[current_char.current].textContent && key != '') {
+        isIncremented.current = true
         setCursorX(Math.floor(charRect.right))
         setCursorY(Math.floor(charRect.top))
         const index = correct_words.findIndex(obj => current_word.current in obj);
@@ -75,6 +192,7 @@ function App() {
         }
       }
       if (key != word?.children[current_char.current].textContent && key != ' ') {
+        isIncremented.current = true
         setCursorX(Math.floor(charRect.right))
         setCursorY(Math.floor(charRect.top))
         const index = false_words.findIndex(obj => current_word.current in obj);
@@ -90,6 +208,7 @@ function App() {
       }
     }
     if (key == ' ') {
+      isIncremented.current = true
       current_char.current = 0
 
       let next_word = document.getElementsByClassName(`word${current_word.current + 1} word`)[0];
@@ -118,13 +237,13 @@ function App() {
   }
 
   useEffect(() => {
-    if (false_words.length > 0) {
+    if (false_words.length > 0 && isIncremented.current) {
       current_char.current++
     }
   }, [false_words])
 
   useEffect(() => {
-    if (correct_words.length > 0) {
+    if (correct_words.length > 0 && isIncremented.current) {
       current_char.current++
     }
   }, [correct_words])
