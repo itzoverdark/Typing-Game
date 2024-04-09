@@ -19,6 +19,7 @@ function App() {
   let current_word = useRef(0);
   let current_char = useRef(0);
 
+  const [cursorOpacity, setCursorOpacity] = useState(100)
   // fetch words
   useEffect(() => {
     const get_words_request = async () => {
@@ -248,12 +249,22 @@ function App() {
     }
   }, [correct_words])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (cursorX === 230 || cursorX == 231 || cursorX == 229) {
+        setCursorOpacity(prevOpacity => (prevOpacity === 100 ? 0 : 100));
+      }
+    }, 1000);
+    setCursorOpacity(100);
+
+    return () => clearInterval(interval);
+  }, [cursorX]);
   return (
     <div>
       <div className='header'></div>
       <div tabIndex={0} onKeyDown={(e) => handleClick(e.key)} className='parent-container'>
 
-        <div className={`cursor`} style={{ position: 'absolute', left: cursorX, top: cursorY, display:`${hideCursor.current ? 'none' : 'block'}` }}></div>
+        <div className={`cursor`} style={{ position: 'absolute', left: cursorX,opacity: cursorOpacity , top: cursorY, display:`${hideCursor.current ? 'none' : 'block'}` }}></div>
         {words?.map((word, i) => (
           <div key={i} className={`word${i} word`}>
             {word.split('').map((char, j) => {
