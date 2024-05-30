@@ -3,7 +3,7 @@
 
   
 
-<h3  align="center">Typing Game</h3>
+<h3  align="center">Typing Game (In Development)</h3>
 
   
 
